@@ -1,0 +1,89 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
+#include<vector>
+#include<string>
+#include<set>
+#include<stack>
+#include<queue>
+#include <string.h>
+#include<map>
+using namespace std;
+const int maxn=200005;
+const double eps=1e-7;
+typedef long long ll;
+int seq_tree[maxn*4];
+int data[maxn];
+void build(int node,int begin,int end)
+{
+        if(begin==end) {seq_tree[node]=data[begin];return;}
+        build(2*node,begin,begin+((end-begin)>>1));
+        build(2*node+1,begin+((end-begin)>>1)+1,end);
+        seq_tree[node]=max(seq_tree[2*node],seq_tree[2*node+1]);
+        cout<<begin<<' '<<end<<' '<<seq_tree[node]<<endl;
+}
+void update(int node,int begin,int end,const int pos,const int num)
+{
+        if(begin==end)
+        {
+                seq_tree[node]=num;
+                return;
+        }
+        int mid=begin+((end-begin)>>1);
+        if(pos<=mid)
+        {
+                update(node*2,begin,mid,pos,num);
+        }
+        else
+        {
+                update(node*2+1,mid+1,end,pos,num);
+        }
+        seq_tree[node]=max(seq_tree[2*node],seq_tree[2*node+1]);
+}
+int query(int node,int begin,int end,int left,int right)
+{
+        int p1,p2;
+        if(end<left||begin>right)
+                return -1;
+        if(end<=right&&begin>=left)
+        return seq_tree[node];
+        int mid=begin+((end-begin)>>1);
+        p1=query(2*node,begin,mid,left,right);
+        p2=query(2*node+1,mid+1,end,left,right);
+        if(p1==-1)
+                return p2;
+        if(p2==-1)
+                return p1;
+        return max(p1,p2);
+}
+int main()
+{
+        int n,m,ub,lb;
+                while(~scanf("%d%d",&n,&m))
+                {for(int i=0;i<n;i++)
+                {
+                        scanf("%d",&data[i]);
+                }
+                memset(seq_tree,0,sizeof(seq_tree));
+                memset(data,0,sizeof(data));
+                build(1,0,n-1);
+                string str;
+                while(m--)
+                {
+                        cin>>str;
+                        if(str=="Q")
+                        {
+                                scanf("%d%d",&ub,&lb);
+                                printf("%d\n",query(1,0,n-1,ub-1,lb-1));
+                        }
+                        if(str=="U")
+                        {
+                                scanf("%d%d",&ub,&lb);
+                                update(1,0,n-1,ub-1,lb);
+                        }
+                }
+                }
+                system("pause");
+        return 0;
+}

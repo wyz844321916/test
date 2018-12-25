@@ -1,0 +1,89 @@
+// 卡特兰数公式：calalan[i]=catalan[i-1]*(4*i-2)/(i+1)
+// 大数卡特兰数模板
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
+#include<string>
+#include<string.h>
+#include<queue>
+#include<stack>
+#include<map>
+#include<set>
+#include<vector>
+
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+const int maxn=100005;
+const int inf=0x3f3f3f3f;
+const double eps=1e-6;
+const int mod=1000000007;
+int catalan[105][1005]; //用catalan[i][0]保存第i个卡特兰数的长度
+void init()
+{
+        memset(catalan,0,sizeof(catalan));
+        catalan[1][0]=1;
+        catalan[1][1]=1;
+        catalan[2][0]=1;
+        catalan[2][1]=2;
+        int len=1;
+        int temp,cnt;
+        for(int i=3;i<=100;i++)
+        {
+                for(int j=1;j<=len;j++)
+                {
+                        catalan[i][j]+=catalan[i-1][j]*(4*i-2);
+                        //cout<<catalan[i][j]<<endl;
+                        temp=catalan[i][j]/10;
+                        cnt=1;
+                        catalan[i][j]%=10;
+                        //cout<<temp<<endl;
+                        while(temp)
+                        {
+                                catalan[i][j+cnt]+=temp%10;
+                                temp/=10;
+                                temp+=catalan[i][j+cnt]/10;
+                                catalan[i][j+cnt]%=10;
+                                cnt++;
+                        }
+                        catalan[i][0]=j+cnt-1;
+                }
+                //cout<<len<<' '<<i<<endl;
+                //for(int j=catalan[i][0];j>=1;j--)
+                //        cout<<catalan[i][j];
+                //cout<<endl;
+                //puts("***************************");
+                len=catalan[i][0];
+                bool f=false;
+                for(int j=len;j>=1;j--)
+                {
+                        temp=catalan[i][j]%(i+1);
+                        catalan[i][j]/=(i+1);
+                        if(catalan[i][j]==0&&!f) len--;
+                        else f=true;
+                        //printf("len: %d\n",len);
+                        if(j>1)
+                        catalan[i][j-1]=catalan[i][j-1]+10*temp;
+                        //cout<<temp<<' '<<catalan[i][j]<<endl;
+                }
+                catalan[i][0]=len;
+                //cout<<len<<endl;
+                //for(int j=catalan[i][0];j>=1;j--)
+                //        cout<<catalan[i][j];
+                //cout<<endl;
+                //puts("################################");
+        }
+}
+int main()
+{
+        int n;
+        init();
+        while(~scanf("%d",&n))
+        {
+                for(int i=catalan[n][0];i>=1;i--)
+                        printf("%d",catalan[n][i]);
+                puts("");
+        }
+        return 0;
+}

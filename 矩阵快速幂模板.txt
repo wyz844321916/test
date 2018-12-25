@@ -1,0 +1,104 @@
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<string.h>
+#include<cmath>
+#include<algorithm>
+#include<queue>
+#include<set>
+#include<stack>
+#include<vector>
+
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+const int maxn=100005;
+const int inf=0x3f3f3f3f;
+const double eps=1e-6;
+const int mod=1e9+7;
+
+struct matrix
+{
+        ll data[105][105];
+        int len;
+        void init()
+        {
+                memset(data,0,sizeof(data));
+        }
+}temp;
+matrix matrix_multi(matrix x,matrix y)
+{
+        matrix tt;
+        tt.len=x.len;
+        tt.init();
+        for(int i=0;i<x.len;i++)
+                for(int j=0;j<x.len;j++)
+        {
+                for(int k=0;k<x.len;k++)
+                {
+                        tt.data[i][j]=(tt.data[i][j]+(x.data[i][k]*y.data[k][j])%mod)%mod;
+                }
+        }
+        return tt;
+}
+matrix matrix_quickmod(matrix x,int t)
+{
+        matrix tt;
+        tt.len=x.len;
+        tt.init();
+        for(int i=0;i<tt.len;i++)
+                        tt.data[i][i]=1;
+        while(t)
+        {
+                if(t&1) tt=matrix_multi(tt,x);
+                x=matrix_multi(x,x);
+                t>>=1;
+        //        cout<<t<<endl;
+        //        for(int i=0;i<tt.len;i++)
+        //{
+        //        for(int j=0;j<tt.len;j++)
+        //        {
+        //                if(j==0) printf("%lld",tt.data[i][j]);
+        //                else
+        //                        printf(" %lld",tt.data[i][j]);
+        //        }
+        //        puts("");
+        //}
+        //        for(int i=0;i<x.len;i++)
+        //{
+        //        for(int j=0;j<x.len;j++)
+        //        {
+        //                if(j==0) printf("%lld",x.data[i][j]);
+        //                else
+        //                        printf(" %lld",x.data[i][j]);
+        //        }
+        //        puts("");
+        //}
+        }
+        return tt;
+}
+int main()
+{
+        int n,m;
+        scanf("%d%d",&n,&m);
+        temp.len=n;
+        for(int i=0;i<n;i++)
+        {
+                for(int j=0;j<n;j++)
+                {
+                        scanf("%lld",&temp.data[i][j]);
+                }
+        }
+        matrix res=matrix_quickmod(temp,m);
+        for(int i=0;i<n;i++)
+        {
+                for(int j=0;j<n;j++)
+                {
+                        if(j==0) printf("%lld",res.data[i][j]);
+                        else
+                                printf(" %lld",res.data[i][j]);
+                }
+                puts("");
+        }
+        return 0;
+}

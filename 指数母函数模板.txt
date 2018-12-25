@@ -1,0 +1,65 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
+#include<string>
+#include<string.h>
+#include<queue>
+#include<stack>
+#include<map>
+#include<set>
+#include<vector>
+
+using namespace std;
+const int maxn=100005;
+const int inf=0x3f3f3f3f;
+const double eps=1e-6;
+typedef long long ll;
+int a[maxn];
+double c1[maxn];
+double c2[maxn];
+int factorial[25];
+void init()
+{
+        factorial[0]=1;
+        factorial[1]=1;
+        for(int i=2;i<25;i++)
+                factorial[i]=factorial[i-1]*i;
+        return;
+}
+int main()
+{
+        init();
+        int n,m;
+        while(~scanf("%d%d",&n,&m))
+        {for(int i=0;i<n;i++)
+                scanf("%d",&a[i]);
+        memset(c1,0,sizeof(c1));
+        memset(c2,0,sizeof(c2));
+        for(int i=0;i<=a[0];i++)
+        {
+                c1[i]=1.0/(factorial[i]*1.0);
+        }
+        //cout<<'p'<<endl;
+        for(int i=1;i<n;i++)
+        {
+                for(int j=0;j<=m;j++)
+                {for(int k=0;j+k<=m&&k<=a[i];k++)
+                {
+                        c2[j+k]+=c1[j]/factorial[k];
+                        //cout<<'q'<<k<<endl;
+                }
+                }
+                for(int j=0;j<=m;j++)
+                {
+                        c1[j]=c2[j];
+                        c2[j]=0;
+                        //cout<<'r'<<endl;
+                }
+        }
+        //for(int i=0;i<=m;i++)
+        //        cout<<c1[i]<<' '<<c2[i]<<' '<<a[i]<<factorial[i]<<endl;
+        printf("%.0f\n",c1[m]*factorial[m]);
+        }
+        return 0;
+}

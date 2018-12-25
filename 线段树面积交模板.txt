@@ -1,0 +1,125 @@
+#include <iostream>
+#include<stdio.h>
+#include<string>
+#include<cmath>
+#include<algorithm>
+#include<vector>
+#include<stack>
+#include<string.h>
+#include<queue>
+using namespace std;
+const int maxn=50005;
+typedef long long ll;
+struct node
+{
+        int l,r;
+        int cover;
+        double lf,rf;
+        double cnt,more;
+}seq_tree[maxn<<2];
+struct Line
+{
+        double x,y1,y2;
+        int f;
+        bool operator <(const Line &s) const
+        {
+                return x<s.x;
+        }
+}line[maxn];
+double y[maxn];
+void build(int nod,int l,int r)
+{
+        seq_tree[nod].l=l;seq_tree[nod].r=r;
+        seq_tree[nod].cnt=seq_tree[nod].cover=0;
+        seq_tree[nod].lf=y[l];
+        seq_tree[nod].rf=y[r];
+        if(l+1==r) return;
+        int mid=l+((r-l)>>1);
+        build(nod<<1,l,mid);
+        build(nod<<1|1,mid,r);
+}
+void calculate_len(int nod)
+{
+        if(seq_tree[nod].cover>=2)
+        {
+                seq_tree[nod].more=seq_tree[nod].cnt=seq_tree[nod].rf-seq_tree[nod].lf;
+                return;
+        }
+        else if(seq_tree[nod].cover==1)
+        {
+                seq_tree[nod].cnt=seq_tree[nod].rf-seq_tree[nod].lf;
+                if(seq_tree[nod].l+1==seq_tree[nod].r) seq_tree[nod].more=0;
+                else seq_tree[nod].more=seq_tree[nod<<1].cnt+seq_tree[nod<<1|1].cnt;
+
+        }
+        else
+        {
+                if(seq_tree[nod].l+1==seq_tree[nod].r) seq_tree[nod].more=seq_tree[nod].cnt=0;
+                else
+                {
+                        seq_tree[nod].cnt=seq_tree[nod<<1].cnt+seq_tree[nod<<1|1].cnt;
+                        seq_tree[nod].more=seq_tree[nod<<1].more+seq_tree[nod<<1|1].more;
+                }
+        }
+}
+void update(int nod,Line e)
+{
+        if(e.y1==seq_tree[nod].lf&&e.y2==seq_tree[nod].rf)
+        {
+                seq_tree[nod].cover+=e.f;
+                calculate_len(nod);
+                return;
+        }
+        if(e.y2<=seq_tree[nod<<1].rf) update(nod<<1,e);
+        else if(e.y1>=seq_tree[nod<<1|1].lf) update(nod<<1|1,e);
+        else
+        {
+                Line temp=e;
+                temp.y2=seq_tree[nod<<1].rf;
+                update(nod<<1,temp);
+                temp=e;
+                temp.y1=seq_tree[nod<<1|1].lf;
+                update(nod<<1|1,temp);
+        }
+        calculate_len(nod);
+}
+int main()
+{
+        int t,n,size;
+        double x1,x2,y1,y2;
+        scanf("%d",&t);
+        while(t--)
+        {
+                scanf("%d",&n);
+                size=1;
+                for(int i=1;i<=n;i++)
+                {
+                        scanf("%lf%lf%lf%lf",&x1,&y1,&x2,&y2);
+                        line[size].x=x1;
+                        line[size].y1=y1;
+                        line[size].y2=y2;
+                        line[size].f=1;
+                        y[size]=y1;
+                        size++;
+                        line[size].x=x2;
+                        line[size].y1=y1;
+                        line[size].y2=y2;
+                        line[size].f=-1;
+                        y[size]=y2;
+                        size++;
+                }
+                sort(line+1,line+size);
+                sort(y+1,y+size);
+                build(1,1,size-1);
+                update(1,line[1]);
+                double res=0.0;
+                for(int i=2;i<size;i++)
+                {
+                        res+=seq_tree[1].more*(line[i].x-line[i-1].x);
+                        update(1,line[i]);
+                }
+                printf("%.2f\n",res);
+        }
+	system("pause");
+	return 0;
+}

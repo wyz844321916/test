@@ -1,0 +1,7 @@
+LL exgcd(LL a, LL b, LL& x, LL& y) 
+{      
+if (b == 0) { x = 1; y = 0; return a; }      
+LL d = exgcd(b, a % b, y, x);      
+y -= x * (a / b);      
+return d;
+}

@@ -1,0 +1,73 @@
+/*
+第二类斯特林数，用来处理将n个数分解成m个非空集合的种数这样的问题
+公式为：stirling[i][0]=0,stirling[i][i]=1,stirling[i][j]=stirling[i-1][j-1]+j*stirling[i-1][j];(i: from 1 to n,j: from 1 to i)
+*/
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
+#include<string>
+#include<string.h>
+#include<queue>
+#include<stack>
+#include<map>
+#include<set>
+#include<vector>
+
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+const int maxn=100005;
+const int inf=0x3f3f3f3f;
+const double eps=1e-6;
+const int mod=1000000007;
+ll factorial[25];
+ll stirling[1005][1005];
+ll C[2005][2005];
+void init()
+{
+        for(int i=1;i<=1000;i++)
+        {
+                stirling[i][0]=0;
+                stirling[i][i]=1;
+                for(int j=1;j<i;j++)
+                {
+                        stirling[i][j]=(stirling[i-1][j-1]+(j*stirling[i-1][j])%mod)%mod;
+                        //cout<<stirling[i][j]<<' ';
+                }
+                //cout<<endl;
+        }
+        for(int i=0;i<=2000;i++)
+                C[i][0]=C[i][i]=1;
+        for(int i=1;i<=2000;i++)
+        {
+                for(int j=1;j<i;j++)
+                        C[i][j]=(C[i-1][j]+C[i-1][j-1])%mod;
+        }
+}
+int main()
+{
+        int n,r,m,k;
+        ll res=0;
+        int cnt=0;
+        init();
+        while(~scanf("%d%d%d%d",&n,&r,&k,&m))
+        {
+                cnt=0;
+                res=0;
+                if(1+(r-1)*k>n)
+                        puts("0");
+                else
+                {
+                        cnt=n-(1+(r-1)*k);
+                        for(int i=0;i<=m;i++)
+                        {
+                                res=(res+stirling[r][i])%mod;
+                                //cout<<res<<endl;
+                        }
+                        res=(res*C[cnt+r][r])%mod;
+                printf("%lld\n",(res%mod));
+                }
+        }
+        return 0;
+}

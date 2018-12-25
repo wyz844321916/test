@@ -1,0 +1,64 @@
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#include<string>
+#include<string.h>
+#include<vector>
+#include<queue>
+#include<stack>
+
+using namespace std;
+const int maxn=50005;
+const int inf=0x3f3f3f3f;
+const double eps=1e-6;
+const int mod=10000;
+typedef long long ll;
+int dp[maxn];
+int a[maxn];
+int b[maxn];
+int aa[105];
+int main()
+{
+        bool f=true;
+        int n;
+        int sum=0;
+        scanf("%d",&n);
+        for(int i=1;i<=n;i++)
+        {
+                scanf("%d",&aa[i]);
+                sum+=aa[i];
+        }
+        int temp=sum;
+        sum/=2;
+        memset(a,0,sizeof(a));
+        memset(b,0,sizeof(b));
+        a[0]=1;
+        for(int i=1;i<=n;i++)
+        {
+                for(int j=0;j<=sum;j++)
+                for(int k=0;k<=1&&j+k*aa[i]<=sum;k++)
+                {
+                        b[j+k*aa[i]]+=a[j];
+                }
+                for(int j=0;j<=sum;j++)
+                {
+                        a[j]=b[j];
+                        b[j]=0;
+                }
+
+        }
+        //for(int i=0;i<=sum;i++)
+        //        cout<<a[i]<<' ';
+        for(int i=sum;i>=0;i--)
+        {
+                if(a[i]!=0)
+                {
+                        printf("%d\n",temp-i*2);
+                        break;
+                }
+        }
+
+       // system("pause");
+        return 0;
+}

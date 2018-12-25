@@ -1,0 +1,66 @@
+/*
+斯特林数，用来判断n个数形成m个非空循环排列的情况
+公式为：stirling[i][0]=0;(i: from 1 to n)stirling[0][0]=1;stirling[i][i]=1;(i: from 1 to n)
+        stiring[i][j]=stirling[i-1][j-1]+stirling[i-1][j]*(i-1);(i: from i to n;j: from 1 to i-1);
+*/
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
+#include<string>
+#include<string.h>
+#include<queue>
+#include<stack>
+#include<map>
+#include<set>
+#include<vector>
+
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+const int maxn=100005;
+const int inf=0x3f3f3f3f;
+const double eps=1e-6;
+const int mod=100;
+ll factorial[25];
+ll stirling[25][25];
+void init()
+{
+        factorial[0]=1;
+        for(int i=1;i<=20;i++)
+        factorial[i]=factorial[i-1]*i;
+        for(int i=1;i<=20;i++)
+        {
+                stirling[i][0]=0;
+                stirling[i][i]=1;
+                for(int j=1;j<i;j++)
+                {
+                        stirling[i][j]=(i-1)*stirling[i-1][j]+stirling[i-1][j-1];
+                }
+        }
+
+}
+int main()
+{
+        int t,n,k;
+        ll res;
+        ll temp;
+        double ans;
+        init();
+        scanf("%d",&t);
+        while(t--)
+        {
+                scanf("%d%d",&n,&k);
+
+                res=0;
+                for(int i=1;i<=k;i++)
+                {
+                        res+=stirling[n][i]-stirling[n-1][i-1];
+                        cout<<res<<' '<<stirling[n][i]<<' '<<stirling[n-1][i-1]<<endl;
+                }
+                cout<<res<<endl;
+                ans=(res*1.0D)/(factorial[n]*1.0D);
+                printf("%.4f\n",ans);
+        }
+        return 0;
+}

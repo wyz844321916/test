@@ -1,0 +1,22 @@
+int pre[maxn];
+int Find(int x)
+{
+        int r=x;
+        while(pre[r]!=r)
+                r=pre[r];
+        int i=x,j;
+        while(i!=r)
+        {
+                j=pre[i];
+                pre[i]=r;
+                i=j;
+        }
+        return r;
+}
+void Union(int x,int y)
+{
+        int a=Find(x);
+        int b=Find(y);
+        if(a!=b)
+        pre[a]=b;
+}
